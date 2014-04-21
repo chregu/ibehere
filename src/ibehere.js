@@ -29,7 +29,7 @@ var ibehere = React.createClass({
 
 React.renderComponent(
 <div>
-<h1>Hello, world!</h1>
+<h1>I be here!</h1>
 <ibehere />
 </div>
 
