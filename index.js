@@ -6,7 +6,7 @@ var options = {};
 // Create a server with a host and port
 var server = Hapi.createServer('0.0.0.0', 8000, options);
 
-var lastPosition = {name: 'unknown on server', date: "unknown"};
+var lastPosition = {name: 'server just started', date: "unknown"};
 var io;
 
 // Add the route
@@ -58,7 +58,7 @@ function updatePosition(name, date) {
 server.start(function () {
     io = SocketIO.listen(server.listener);
     io.sockets.on('connection', function(socket) {
-        updatePosition("server just started, no position yet","now");
+        io.sockets.emit("position", {name: lastPosition.name, date: lastPosition.date});
     });
     io.set('log level', 1);
 });
