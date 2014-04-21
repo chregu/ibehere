@@ -25,6 +25,14 @@ server.route([
 
 },
 {
+
+    method: 'GET',
+    path: '/libraries/{path*}',
+    handler: {
+        directory: { path: './libraries', listing: false, index: true }
+    }
+
+},{
     method: 'GET',
     path: '/updatePosition/',
     handler: function (request, reply) {
