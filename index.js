@@ -33,7 +33,7 @@ server.route([
     path: '/updatePosition/',
     handler: function (request, reply) {
         if (request.query.name) {
-            updatePosition(request.query.name, request.query.date);
+            updatePosition(request.query.name, new Date(Date.parse(request.query.date)));
         }
         reply({"position": lastPosition});
     }
@@ -51,7 +51,7 @@ server.route([
 
 function updatePosition(name, date) {
     lastPosition = {name: name, date: date};
-    io.sockets.emit("position", {name: lastPosition.name, date: lastPosition.date});
+    io.sockets.emit("position", {name: lastPosition.name, date: lastPosition.date.toDateString() + " " + lastPosition.date.toTimeString()});
 }
 
 // Start the server
