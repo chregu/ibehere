@@ -7,7 +7,7 @@ var options = {
 
 
 // Create a server with a host and port
-var server = Hapi.createServer('localhost', 8000, options);
+var server = Hapi.createServer('0.0.0.0', 8000, options);
 
 var lastPosition = {name: 'unknown on server'};
 var io;
