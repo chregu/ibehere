@@ -8,7 +8,7 @@ var ibehere = React.createClass({displayName: 'ibehere',
     render: function() {
         return (
         React.DOM.div(null, 
-        "Last position of chregu is: ", this.state.lastPosition, " at ", this.state.lastDate
+        "Last known position of chregu is ", React.DOM.br(null),"Place: ", this.state.lastPosition,React.DOM.br(null),"Time: ", this.state.lastDate
             )
 
         );

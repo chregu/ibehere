@@ -8,7 +8,7 @@ var ibehere = React.createClass({
     render: function() {
         return (
         <div>
-        Last position of chregu is: {this.state.lastPosition} at {this.state.lastDate}
+        Last known position of chregu is <br/>Place: {this.state.lastPosition}<br/>Time: {this.state.lastDate}
             </div>
 
         );
