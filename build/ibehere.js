@@ -2,13 +2,13 @@
 
 var ibehere = React.createClass({displayName: 'ibehere',
     getInitialState: function() {
-        return {lastPosition: "unknown"};
+        return {lastPosition: "unknown", lastDate: "unknown"};
     },
 
     render: function() {
         return (
         React.DOM.div(null, 
-        "Last position of chregu is: ", this.state.lastPosition
+        "Last position of chregu is: ", this.state.lastPosition, " at ", this.state.lastDate
             )
 
         );
@@ -17,12 +17,12 @@ var ibehere = React.createClass({displayName: 'ibehere',
         var socket = io.connect();
         var self = this;
         socket.on('position', function (data) {
-            self.handlePositionUpdate(data.name);
+            self.handlePositionUpdate(data.name, data.date);
         });
     },
 
-    handlePositionUpdate: function(position) {
-        this.setState({lastPosition: position});
+    handlePositionUpdate: function(position, date) {
+        this.setState({lastPosition: position, lastDate: date});
     }
 });
 

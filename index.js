@@ -37,7 +37,7 @@ server.route([
     path: '/updatePosition/',
     handler: function (request, reply) {
         if (request.query.name) {
-            updatePosition(request.query.name);
+            updatePosition(request.query.name, request.query.date);
         }
         reply({"position": lastPosition});
     }
