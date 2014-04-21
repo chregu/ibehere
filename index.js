@@ -9,7 +9,7 @@ var options = {
 // Create a server with a host and port
 var server = Hapi.createServer('0.0.0.0', 8000, options);
 
-var lastPosition = {name: 'unknown on server'};
+var lastPosition = {name: 'unknown on server', date: "unknown"};
 var io;
 
 
@@ -53,9 +53,9 @@ server.route([
 ]
 );
 
-function updatePosition(name) {
-    lastPosition = name;
-    io.sockets.emit("position", {name: lastPosition});
+function updatePosition(name, date) {
+    lastPosition = {name: name, date: date};
+    io.sockets.emit("position", {name: lastPosition.name, date: lastPosition.date});
 }
 
 // Start the server
@@ -63,6 +63,7 @@ function updatePosition(name) {
 
         io = SocketIO.listen(server.listener);
         io.sockets.on('connection', function(socket) {
-            socket.emit("position", {name: lastPosition});
+            socket.emit("position", {name: lastPosition.name, date: lastPosition.date});
         });
+io.set('log level', 1);
     });
