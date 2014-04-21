@@ -6,7 +6,7 @@ var options = {};
 // Create a server with a host and port
 var server = Hapi.createServer('0.0.0.0', 8000, options);
 
-var lastPosition = {};
+var lastPosition = {'nowhere': {name: 'nowhere', date: new Date()}};
 var io;
 
 // Add the route
@@ -36,15 +36,8 @@ server.route([
             if (request.query.entry == 1) {
                 updatePosition(request.query.name, new Date(Date.parse(request.query.date)));
             } else {
-                var maxPos = null;
                 lastPosition[request.query.name] = {}
-                //search latest entry
-                for (var key in lastPosition) {
-                    var obj = lastPosition[key];
-                    if (!maxPos || obj.date > maxPos.date) {
-                        maxPos = obj;
-                    }
-                }
+                var maxPos = getLatestPosition();
                 if (maxPos.date) {
                     updatePosition(maxPos.name, maxPos.date);
                 }
@@ -65,6 +58,18 @@ server.route([
 ]
 );
 
+function getLatestPosition() {
+    var maxPos = null;
+    //search latest entry
+    for (var key in lastPosition) {
+        var obj = lastPosition[key];
+        if (!maxPos || obj.date > maxPos.date) {
+            maxPos = obj;
+        }
+    }
+    return maxPos;
+}
+
 function updatePosition(name, date) {
     lastPosition[name] = {name: name, date: date};
     io.sockets.emit("position", {name: lastPosition[name].name, date: lastPosition[name].date.toDateString() + " " + lastPosition[name].date.toTimeString()});
@@ -75,7 +80,10 @@ function updatePosition(name, date) {
 server.start(function () {
     io = SocketIO.listen(server.listener);
     io.sockets.on('connection', function(socket) {
-       io.sockets.emit("position", {name: "unknown on server", date: "unknown date"});
+        var maxPos = getLatestPosition();
+        if (maxPos && maxPos.date) {
+            io.sockets.emit("position", {name: maxPos.name, date: maxPos.date.toDateString() + " " + maxPos.date.toTimeString()});
+        }
     });
     io.set('log level', 1);
 });
