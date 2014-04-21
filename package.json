@@ -1,0 +1,23 @@
+{
+  "name": "ibehere",
+  "version": "0.0.1",
+  "description": "ibehere",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chregu/ibehere.git"
+  },
+  "author": "Christian Stocker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chregu/ibehere/issues"
+  },
+  "homepage": "https://github.com/chregu/ibehere",
+  "dependencies": {
+    "hapi": "^4.0.0",
+    "socket.io": "^0.9.16"
+  }
+}
