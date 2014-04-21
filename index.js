@@ -6,7 +6,7 @@ var options = {};
 // Create a server with a host and port
 var server = Hapi.createServer('0.0.0.0', 8000, options);
 
-var lastPosition = {name: 'server just started', date: "unknown"};
+var lastPosition = {};
 var io;
 
 // Add the route
@@ -33,9 +33,25 @@ server.route([
     path: '/updatePosition/',
     handler: function (request, reply) {
         if (request.query.name) {
-            updatePosition(request.query.name, new Date(Date.parse(request.query.date)));
+            if (request.query.entry == 1) {
+                updatePosition(request.query.name, new Date(Date.parse(request.query.date)));
+            } else {
+                var maxPos = null;
+                lastPosition[request.query.name] = {}
+                //search latest entry
+                for (var key in lastPosition) {
+                    var obj = lastPosition[key];
+                    if (!maxPos || obj.date > maxPos.date) {
+                        maxPos = obj;
+                    }
+                }
+                if (maxPos.date) {
+                    updatePosition(maxPos.name, maxPos.date);
+                }
+
+            }
         }
-        reply({"position": lastPosition});
+        reply({"position": lastPosition[request.query.name]});
     }
 },
 {
@@ -50,15 +66,16 @@ server.route([
 );
 
 function updatePosition(name, date) {
-    lastPosition = {name: name, date: date};
-    io.sockets.emit("position", {name: lastPosition.name, date: lastPosition.date.toDateString() + " " + lastPosition.date.toTimeString()});
+    lastPosition[name] = {name: name, date: date};
+    io.sockets.emit("position", {name: lastPosition[name].name, date: lastPosition[name].date.toDateString() + " " + lastPosition[name].date.toTimeString()});
+    console.log(lastPosition);
 }
 
 // Start the server
 server.start(function () {
     io = SocketIO.listen(server.listener);
     io.sockets.on('connection', function(socket) {
-        io.sockets.emit("position", {name: lastPosition.name, date: lastPosition.date});
+       io.sockets.emit("position", {name: "unknown on server", date: "unknown date"});
     });
     io.set('log level', 1);
 });
