@@ -2,14 +2,15 @@
 
 var ibehere = React.createClass({displayName: 'ibehere',
     getInitialState: function() {
-        return {lastPosition: "unknown", lastDate: "unknown"};
+        return {data: {"start": { name: "unknown", date: "unknown"}}};
     },
 
     render: function() {
         return (
         React.DOM.div(null, 
-        "Last known position of chregu is ", React.DOM.br(null),"Place: ", this.state.lastPosition,React.DOM.br(null),"Time: ", this.state.lastDate
-            )
+        "Last known positions of chregu are",
+        positions( {data:this.state.data})
+        )
 
         );
     },
@@ -17,16 +18,46 @@ var ibehere = React.createClass({displayName: 'ibehere',
         var socket = io.connect();
         var self = this;
         socket.on('position', function (data) {
-            self.handlePositionUpdate(data.name, data.date);
+            self.handlePositionUpdate(data);
         });
     },
 
-    handlePositionUpdate: function(position, date) {
-        this.setState({lastPosition: position, lastDate: date});
+    handlePositionUpdate: function(position) {
+        this.setState({data: position});
     }
 });
 
+var position = React.createClass({displayName: 'position',
 
+    render: function() {
+        return (
+            React.DOM.div(null, 
+                "Place2: ", this.props.name,React.DOM.br(null),"Time: ", this.props.time
+            )
+            );
+    }
+});
+
+var positions = React.createClass({displayName: 'positions',
+
+    render: function() {
+        var positionNodes = [];
+        for (var key in this.props.data) {
+            var pos = this.props.data[key];
+            if (pos.name) {
+                positionNodes.push(position( {key:pos.name, name:pos.name, time:pos.readabledate}))
+            }
+         };
+
+        return (
+            React.DOM.div( {className:"positions"}, 
+            positionNodes
+            )
+         );
+    }
+
+
+});
 React.renderComponent(
 React.DOM.div(null, 
 React.DOM.h1(null, "I be here!"),

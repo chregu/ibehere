@@ -71,19 +71,17 @@ function getLatestPosition() {
 }
 
 function updatePosition(name, date) {
-    lastPosition[name] = {name: name, date: date};
-    io.sockets.emit("position", {name: lastPosition[name].name, date: lastPosition[name].date.toDateString() + " " + lastPosition[name].date.toTimeString()});
-    console.log(lastPosition);
+    lastPosition[name] = {name: name, date: date, readabledate:date.toDateString() + " " +  date.toTimeString()};
+    io.sockets.emit("position", lastPosition);
+    io.sockets.emit("lastPosition", getLatestPosition());
 }
 
 // Start the server
 server.start(function () {
     io = SocketIO.listen(server.listener);
     io.sockets.on('connection', function(socket) {
-        var maxPos = getLatestPosition();
-        if (maxPos && maxPos.date) {
-            io.sockets.emit("position", {name: maxPos.name, date: maxPos.date.toDateString() + " " + maxPos.date.toTimeString()});
-        }
+       io.sockets.emit("position", lastPosition);
+       io.sockets.emit("lastPosition", getLatestPosition());
     });
     io.set('log level', 1);
 });
